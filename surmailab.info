@@ -1,0 +1,6 @@
+name = Survey into CiviCRM Mailing AB
+description = A module for creating new CiviCRM Mailing AB based on chosen survey, language and CiviCRM group
+
+core = 7.x
+
+dependencies[] = civicrm

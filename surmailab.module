@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function surmailab_menu() {
+  $items = array();
+  $items['admin/config/content/surmailab'] = array(
+    'title' => 'Survey into CiviCRM Mailing AB',
+    'description' => 'Create new CiviCRM Mailing AB based on chosen survey',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('surmailab_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Page callback: Current posts settings
+ *
+ * @see current_posts_menu()
+ */
+function surmailab_form($form, &$form_state) {
+  $surveys = _surmailab_survey_list();
+  $list = array(null => t('-- choose survey --'));
+  foreach ($surveys as $survey) {
+    $list[$survey['nid']] = $survey['title'] . ' (' . $survey['language'] . ')';
+  }
+
+  $form['surmailab_form_fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Wybierz typ danych'),
+  );
+
+
+  $form['surmailab_form_fieldset']['survey'] = array(
+    '#type' => 'select',
+    '#title' => t('Survey'),
+    '#description' => t('desc....'),
+    '#options' => array('' => t('- choose survey -')) + $list,
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Create mailing AB'),
+  );
+
+  return $form;
+}
+
+
+/**
+ * @return array mixed
+ */
+function _surmailab_survey_list() {
+  $query = db_select('node', 'n')
+    ->fields('n', array('nid', 'title', 'created', 'language'))
+    ->condition('type', 'survey')
+    ->orderBy('title')
+    ->execute()
+    ->fetchAllAssoc('nid', PDO::FETCH_ASSOC);
+  return $query;
+}
