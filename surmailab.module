@@ -23,6 +23,7 @@ function surmailab_menu() {
  * @see current_posts_menu()
  */
 function surmailab_form($form, &$form_state) {
+  // todo add link to randomSample
   $surveys = _surmailab_survey_list();
   $list = array(null => t('-- choose survey --'));
   foreach ($surveys as $survey) {
@@ -71,6 +72,13 @@ function surmailab_form($form, &$form_state) {
 function _surmailab_form_submit($form, &$form_state) {
   $surveyId = $form_state['values']['survey_id'];
   $groupId = $form_state['values']['group_id'];
+  // todo get more info about survey
+  // todo -> language, content
+  // todo -> questions
+  // todo prepare Mailing AB params
+  // todo -> get greeting and goodbye based on language (from own dictionary, array in this module)
+  // todo -> compose content of mails A and B
+  // todo save Mailing AB to civicrm
 }
 
 
@@ -78,6 +86,7 @@ function _surmailab_form_submit($form, &$form_state) {
  * @return array mixed
  */
 function _surmailab_survey_list() {
+  // todo get only surveys which have empty mailing_abtest_id
   $query = db_select('node', 'n')
     ->fields('n', array('nid', 'title', 'created', 'language'))
     ->condition('type', 'survey')
@@ -94,6 +103,7 @@ function _surmailab_survey_list() {
  * @return array
  */
 function _surmailab_group_list() {
+  // todo add filtering by convention of name of group
   civicrm_initialize();
   $query = "SELECT g.id, g.title
             FROM civicrm_group g LEFT JOIN civicrm_mailing_group mg ON mg.entity_id = g.id AND mg.entity_table = 'civicrm_group'
