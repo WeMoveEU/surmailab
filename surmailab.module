@@ -27,6 +27,7 @@ function surmailab_form($form, &$form_state) {
   foreach ($surveys as $survey) {
     $list[$survey['nid']] = $survey['title'] . ' (' . $survey['language'] . ')';
   }
+  $groups = _surmailab_group_list();
 
   $form['surmailab_form_fieldset'] = array(
     '#type' => 'fieldset',
@@ -34,11 +35,19 @@ function surmailab_form($form, &$form_state) {
   );
 
 
-  $form['surmailab_form_fieldset']['survey'] = array(
+  $form['surmailab_form_fieldset']['survey_id'] = array(
     '#type' => 'select',
     '#title' => t('Survey'),
     '#description' => t('Content of survey will be used for preparing Mailing A/B'),
     '#options' => array('' => t('- choose survey -')) + $list,
+    '#required' => TRUE,
+  );
+
+  $form['surmailab_form_fieldset']['group_id'] = array(
+    '#type' => 'select',
+    '#title' => t('Group'),
+    '#description' => t('Group for mailing AB'),
+    '#options' => array('' => t('- choose group -')) + $groups,
     '#required' => TRUE,
   );
 
@@ -62,4 +71,41 @@ function _surmailab_survey_list() {
     ->execute()
     ->fetchAllAssoc('nid', PDO::FETCH_ASSOC);
   return $query;
+}
+
+
+function _surmailab_group_list() {
+  civicrm_initialize();
+  $query = "SELECT g.id, g.title
+            FROM civicrm_group g LEFT JOIN civicrm_mailing_group mg ON mg.entity_id = g.id AND mg.entity_table = 'civicrm_group'
+            WHERE mg.id IS NULL";
+  $dao = CRM_Core_DAO::executeQuery($query);
+  $list = array();
+  while ($dao->fetch()) {
+    $list[$dao->id] = $dao->title;
+  }
+  return $list;
+}
+
+/**
+ * Override civicrm_api3 function.
+ *
+ * @param string $subject
+ * @param string $action
+ * @param array $params
+ *
+ * @return array
+ */
+function _civicrm_api3($subject, $action, $params) {
+  civicrm_initialize();
+  try {
+    $result = civicrm_api3($subject, $action, $params);
+    return $result;
+  } catch (CiviCRM_API3_Exception $e) {
+    return array(
+      'error' => $e->getMessage(),
+      'error_code' => $e->getErrorCode(),
+      'error_data' => $e->getExtraParams()
+    );
+  }
 }
