@@ -30,14 +30,14 @@ function surmailab_form($form, &$form_state) {
 
   $form['surmailab_form_fieldset'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Wybierz typ danych'),
+    '#title' => t('Survey'),
   );
 
 
   $form['surmailab_form_fieldset']['survey'] = array(
     '#type' => 'select',
     '#title' => t('Survey'),
-    '#description' => t('desc....'),
+    '#description' => t('Content of survey will be used for preparing Mailing A/B'),
     '#options' => array('' => t('- choose survey -')) + $list,
     '#required' => TRUE,
   );
