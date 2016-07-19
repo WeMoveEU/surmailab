@@ -16,6 +16,7 @@ function surmailab_menu() {
   return $items;
 }
 
+
 /**
  * Page callback: Current posts settings
  *
@@ -74,6 +75,11 @@ function _surmailab_survey_list() {
 }
 
 
+/**
+ * Get list of group.
+ *
+ * @return array
+ */
 function _surmailab_group_list() {
   civicrm_initialize();
   $query = "SELECT g.id, g.title
@@ -87,6 +93,7 @@ function _surmailab_group_list() {
   return $list;
 }
 
+
 /**
  * Override civicrm_api3 function.
  *
@@ -99,8 +106,7 @@ function _surmailab_group_list() {
 function _civicrm_api3($subject, $action, $params) {
   civicrm_initialize();
   try {
-    $result = civicrm_api3($subject, $action, $params);
-    return $result;
+    return civicrm_api3($subject, $action, $params);
   } catch (CiviCRM_API3_Exception $e) {
     return array(
       'error' => $e->getMessage(),
