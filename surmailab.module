@@ -73,11 +73,41 @@ function _surmailab_form_submit($form, &$form_state) {
   $surveyId = $form_state['values']['survey_id'];
   $groupId = $form_state['values']['group_id'];
   $survey = _surmailab_get_survey($surveyId);
-  drupal_set_message(print_r($survey, true));
 
-  // todo get more info about survey
-  // todo -> language, content
-  // todo -> questions
+  $node = node_load($surveyId);
+  $title = $node->title;
+  $language = $node->language;
+  $body = $node->field_body['und'][0]['safe_value'];
+  $node->field_mailing_abtest_id; // array
+
+  $components = db_select('webform_component', 'wc')
+    ->fields('wc', array('cid', 'name', 'type', 'extra'))
+    ->condition('nid', $surveyId)
+    ->orderBy('weight')
+    ->execute()
+    ->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
+
+  $renderArray = array();
+  $i = 0;
+  foreach ($components as $c) {
+    $renderArray[++$i] = array(
+      '#type' => 'text',
+      '#title' => $node->title,
+      '#value' => $c['name'],
+    );
+    if ($c['type'] == 'select') {
+      $extra = unserialize($c['extra']);
+      $items = explode("\n", trim($extra['items']));
+      $options = array();
+      foreach ($items as $item) {
+        $t = explode('|', $item);
+        $options[$t[0]] = $t[1];
+      }
+      $renderArray[$i]['#options'] = $options;
+      $renderArray[$i]['#type'] = 'select';
+      $renderArray[$i]['#theme'] = 'item_list';
+    }
+  }
   // todo prepare Mailing AB params
   // todo -> get greeting and goodbye based on language (from own dictionary, array in this module)
   // todo -> compose content of mails A and B
