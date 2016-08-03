@@ -78,8 +78,8 @@ function _surmailab_form_submit($form, &$form_state) {
   $title = $node->title;
   $language = $node->language;
   // todo und means undefined language, do this in better way
-  $body = $node->field_body['und'][0]['safe_value'];
-  $node->field_mailing_abtest_id; // array
+  $body = $node->body['und'][0]['safe_value'];
+  $node->field_mailing_id; // array
 
   $components = db_select('webform_component', 'wc')
     ->fields('wc', array('cid', 'name', 'type', 'extra'))
