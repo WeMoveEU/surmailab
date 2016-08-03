@@ -27,7 +27,7 @@ function surmailab_form($form, &$form_state) {
   $surveys = _surmailab_survey_list();
   $list = array(null => t('-- choose survey --'));
   foreach ($surveys as $survey) {
-    $list[$survey['nid']] = $survey['title'] . ' (' . $survey['language'] . ')';
+    $list[$survey['nid']] = $survey['title'] . ' (' . $survey['language'] .' ' . $survey['nid'] . ')';
   }
   $groups = _surmailab_group_list();
 
