@@ -79,7 +79,6 @@ function _surmailab_form_submit($form, &$form_state) {
   $language = $node->language;
   $body = $node->body[$language][0]['safe_value'];
   $internalName = $node->field_internal_name['und'][0]['safe_value'];
-  $node->field_mailing_id; // array
   CRM_Core_Error::debug_var('$node', $node);
 
   $components = db_select('webform_component', 'wc')
@@ -170,7 +169,8 @@ function _surmailab_form_submit($form, &$form_state) {
   $mab = new CRM_Mailing_BAO_MailingAB();
   $mailab = $mab->add($params);
 
-  // todo save new mailingab_id to survey
+  $node->field_mailing_id = array('und' => array(0 => array('value' => $mailab->id)));
+  node_save($node);
   // todo add drupal message on success
 }
 
