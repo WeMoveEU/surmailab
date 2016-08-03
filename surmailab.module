@@ -77,9 +77,9 @@ function _surmailab_form_submit($form, &$form_state) {
   $node = node_load($surveyId);
   $title = $node->title;
   $language = $node->language;
-  // todo und means undefined language, do this in better way
-  $body = $node->body['und'][0]['safe_value'];
+  $body = $node->body[$language][0]['safe_value'];
   $node->field_mailing_id; // array
+  CRM_Core_Error::debug_var('$node', $node);
 
   $components = db_select('webform_component', 'wc')
     ->fields('wc', array('cid', 'name', 'type', 'extra'))
