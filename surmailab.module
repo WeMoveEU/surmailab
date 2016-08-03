@@ -179,13 +179,19 @@ function _surmailab_form_submit($form, &$form_state) {
  * @return array mixed
  */
 function _surmailab_survey_list() {
-  // todo get only surveys which have empty mailing_abtest_id -> add leftJoin on table with mailingab_id field
-  $query = db_select('node', 'n', array('fetch' => PDO::FETCH_ASSOC))
-    ->fields('n', array('nid', 'title', 'created', 'language'))
-    ->condition('type', 'survey')
-    ->orderBy('title')
-    ->execute();
-  return $query;
+  $query = db_select('node', 'n', array('fetch' => PDO::FETCH_ASSOC));
+  $query->addTag('survey_list');
+  $query->leftJoin(
+    'field_data_field_mailing_id',
+    'm',
+    'n.nid = m.entity_id AND entity_type = :type AND bundle = :bundle',
+    array(':type' => 'node', ':bundle' => 'survey')
+  );
+  $query->fields('n', array('nid', 'title', 'created', 'language'));
+  $query->condition('type', 'survey');
+  $query->isNull('m.entity_id');
+  $query->orderBy('title');
+  return $query->execute();
 }
 
 
