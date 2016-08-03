@@ -180,12 +180,11 @@ function _surmailab_form_submit($form, &$form_state) {
  */
 function _surmailab_survey_list() {
   // todo get only surveys which have empty mailing_abtest_id -> add leftJoin on table with mailingab_id field
-  $query = db_select('node', 'n')
+  $query = db_select('node', 'n', array('fetch' => PDO::FETCH_ASSOC))
     ->fields('n', array('nid', 'title', 'created', 'language'))
     ->condition('type', 'survey')
     ->orderBy('title')
-    ->execute()
-    ->fetchAllAssoc('nid', PDO::FETCH_ASSOC);
+    ->execute();
   return $query;
 }
 
