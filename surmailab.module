@@ -78,6 +78,7 @@ function _surmailab_form_submit($form, &$form_state) {
   $title = $node->title;
   $language = $node->language;
   $body = $node->body[$language][0]['safe_value'];
+  $internalName = $node->field_internal_name['und'][0]['safe_value'];
   $node->field_mailing_id; // array
   CRM_Core_Error::debug_var('$node', $node);
 
@@ -114,17 +115,17 @@ function _surmailab_form_submit($form, &$form_state) {
   // todo internal name from survey as a name of mailing AB
   $mailings = array(
     'a' => array(
-      'name' => substr('Test A ('.$title.')', 0, 128),
+      'name' => substr('Test A ('.$internalName.')', 0, 128),
       'subject' => substr($title, 0, 128),
       'mailing_type' => 'experiment',
     ),
     'b' => array(
-      'name' => substr('Test B ('.$title.')', 0, 128),
+      'name' => substr('Test B ('.$internalName.')', 0, 128),
       'subject' => substr($title, 0, 128),
       'mailing_type' => 'experiment',
     ),
     'c' => array(
-      'name' => substr('Final ('.$title.')', 0, 128),
+      'name' => substr('Final ('.$internalName.')', 0, 128),
       'subject' => substr($title, 0, 128),
       'mailing_type' => 'winner',
     ),
