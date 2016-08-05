@@ -2,13 +2,13 @@
 
 function _surmailab_compose_body($body, $surveyId, $language) {
   $parts = array(
-    _surmailab_get_welcome($language),
-    _surmailab_compose_link($surveyId, $language, _surmailab_get_linklabel1($language)),
+    '<p>'._surmailab_get_welcome($language).'</p>',
+    '<p>'._surmailab_compose_link($surveyId, $language, _surmailab_get_linklabel1($language)).'</p>',
     $body,
-    _surmailab_compose_link($surveyId, $language, _surmailab_get_linklabel2($language)),
-    _surmailab_get_goodbye($language),
+    '<p>'._surmailab_compose_link($surveyId, $language, _surmailab_get_linklabel2($language)).'</p>',
+    '<p>'._surmailab_get_goodbye($language).'</p>',
   );
-  return implode('<br>', $parts);
+  return implode('', $parts);
 }
 
 

@@ -1,5 +1,7 @@
 <?php
 
+require_once 'surmailab.helpers.php';
+
 /**
  * Implements hook_menu().
  */
