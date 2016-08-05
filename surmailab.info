@@ -4,3 +4,5 @@ description = A module for creating new CiviCRM Mailing AB based on chosen surve
 core = 7.x
 
 dependencies[] = civicrm
+
+files[] = surmailab.helpers.php
