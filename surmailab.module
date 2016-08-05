@@ -136,7 +136,7 @@ function _surmailab_form_submit($form, &$form_state) {
     $params = array(
       'name' => $test['name'],
       'subject' => $test['subject'],
-      'body_text' => $body, // todo change to txt version
+      'body_text' => '', // todo change to txt version
       'body_html' => $body,
       'created_id' => $adminId,
       'created_date' => date('YmdHis'),
