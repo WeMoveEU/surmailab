@@ -26,6 +26,8 @@ function surmailab_menu() {
  */
 function surmailab_form($form, &$form_state) {
   // todo add link to randomSample
+  $defaultGroupId = $_GET['group_id'];
+  $defaultSurveyId = $_GET['survey_id'];
   $surveys = _surmailab_survey_list();
   $list = array(null => t('-- choose survey --'));
   foreach ($surveys as $survey) {
@@ -44,6 +46,7 @@ function surmailab_form($form, &$form_state) {
     '#title' => t('Survey'),
     '#description' => t('Content of survey will be used for preparing Mailing A/B'),
     '#options' => array('' => t('- choose survey -')) + $list,
+    '#default_value' => $defaultSurveyId,
     '#required' => TRUE,
   );
 
@@ -52,6 +55,7 @@ function surmailab_form($form, &$form_state) {
     '#title' => t('Group'),
     '#description' => t('Group for mailing AB'),
     '#options' => array('' => t('- choose group -')) + $groups,
+    '#default_value' => $defaultGroupId,
     '#required' => TRUE,
   );
 
@@ -112,8 +116,6 @@ function _surmailab_form_submit($form, &$form_state) {
       $renderArray[$i]['#theme'] = 'item_list';
     }
   }
-  // todo -> get greeting and goodbye based on language (from own dictionary, array in this module)
-  // todo -> compose content of mails A and B
   $mailings = array(
     'a' => array(
       'name' => substr('Test A ('.$internalName.')', 0, 128),
