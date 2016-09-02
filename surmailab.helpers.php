@@ -109,5 +109,5 @@ function _surmailab_get_linklabel2($language) {
 
 function _surmailab_compose_link($surveyId, $language, $label) {
   $url = $_SERVER['HTTP_HOST'].'/'.$language.'/node/'.$surveyId;
-  return '<a href="'.$url.'">'.$label.'</a>';
+  return '<a href="https://'.$url.'">'.$label.'</a>';
 }
