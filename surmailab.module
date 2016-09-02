@@ -161,7 +161,7 @@ function _surmailab_form_submit($form, &$form_state) {
 
   $params = array(
     'sequential' => 1,
-    'testing_criteria' => "full_email",
+    'testing_criteria' => "subject",
     'name' => 'SURVEY '.$internalName,
     'status' => 'Draft',
     'mailing_id_a' => $mailings['a']['id'],
