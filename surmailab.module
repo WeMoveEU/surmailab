@@ -167,7 +167,7 @@ function _surmailab_form_submit($form, &$form_state) {
     'mailing_id_a' => $mailings['a']['id'],
     'mailing_id_b' => $mailings['b']['id'],
     'mailing_id_c' => $mailings['c']['id'],
-    'group_percentage' => 10,
+    'group_percentage' => 50,
     'created_date' => date('YmdHis'),
     'created_id' => $adminId,
   );
