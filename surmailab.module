@@ -15,7 +15,79 @@ function surmailab_menu() {
     'access arguments' => array('access administration pages'),
     'type' => MENU_NORMAL_ITEM,
   );
+  $items['node/%node/surmailab'] = array(
+    'title' => 'Surmailab',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('surmailab_surtab', 1),
+    'access callback' => 'surmailab_access_check',
+    'access arguments' => array(1),
+    'weight' => 0,
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+  );
   return $items;
+}
+
+function surmailab_access_check($node) {
+  if ($node->type == 'survey') {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+function surmailab_surtab($form_state, $node) {
+//  civicrm_initialize();
+  $surveyId = $node['build_info']['args'][0]->nid;
+  $survey = node_load($surveyId);
+  $language = $survey->language;
+  $recipients = $survey->field_recipients['und'][0]['value'];
+
+  // todo find language group
+  // todo set language group as default
+
+  // todo create new empty survey group
+  // todo randomsample from, to, number
+
+  $surveys = _surmailab_survey_list();
+  $list = array(null => t('-- choose survey --'));
+  foreach ($surveys as $survey) {
+    $list[$survey['nid']] = $survey['title'] . ' (' . $survey['language'] .' ' . $survey['nid'] . ')';
+  }
+  $groups = _surmailab_group_list();
+
+  $form['surmailab_form_fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Survey into CiviCRM Mailing AB'),
+  );
+
+  $form['surmailab_form_fieldset']['language'] = array(
+    '#type' => 'item',
+    '#title' => t('Language'),
+    '#markup' => $language,
+  );
+
+  $form['surmailab_form_fieldset']['recipients'] = array(
+    '#type' => 'item',
+    '#title' => t('Number of recipients'),
+    '#markup' => $recipients,
+  );
+
+  $form['surmailab_form_fieldset']['group_id'] = array(
+    '#type' => 'select',
+    '#title' => t('Language group'),
+    '#description' => t('Language group from which survey group will be created'),
+    '#options' => array('' => t('- choose group -')) + $groups,
+//    '#default_value' => $defaultGroupId,
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Create mailing AB'),
+  );
+  $form['#submit'] = array('_surmailab_form_submit');
+
+  return $form;
 }
 
 
