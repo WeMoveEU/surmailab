@@ -191,7 +191,13 @@ function _surmailab_form_submit($form, &$form_state) {
     $surveyGroupId = $result['id'];
   }
 
-  // todo randomsample from, to, number
+  $params = array(
+    'sequential' => 1,
+    'source_group_id' => $groupId,
+    'destination_group_id' => $surveyGroupId,
+    'destination_count' => $recipients,
+  );
+  $result = civicrm_api3('Randomsample', 'create', $params);
 
   $components = db_select('webform_component', 'wc')
     ->fields('wc', array('cid', 'name', 'type', 'extra'))
