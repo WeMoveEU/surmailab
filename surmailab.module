@@ -36,14 +36,24 @@ function surmailab_access_check($node) {
 }
 
 function surmailab_surtab($form_state, $node) {
-//  civicrm_initialize();
+  civicrm_initialize();
   $surveyId = $node['build_info']['args'][0]->nid;
   $survey = node_load($surveyId);
   $language = $survey->language;
   $recipients = $survey->field_recipients['und'][0]['value'];
 
-  // todo find language group
-  // todo set language group as default
+  $languageGroupNameSuffix = CRM_Core_BAO_Setting::getItem('Speakcivi API Preferences', 'language_group_name_suffix');
+  $languageGroupName = $language . $languageGroupNameSuffix;
+  $param = array(
+    'sequential' => 1,
+    'return' => "id",
+    'name' => $languageGroupName,
+  );
+  $result = civicrm_api3('Group', 'get', $param);
+  $defaultGroupId = 0;
+  if ($result['count'] == 1) {
+    $defaultGroupId = $result['id'];
+  }
 
   // todo create new empty survey group
   // todo randomsample from, to, number
@@ -77,7 +87,7 @@ function surmailab_surtab($form_state, $node) {
     '#title' => t('Language group'),
     '#description' => t('Language group from which survey group will be created'),
     '#options' => array('' => t('- choose group -')) + $groups,
-//    '#default_value' => $defaultGroupId,
+    '#default_value' => $defaultGroupId,
     '#required' => TRUE,
   );
 
