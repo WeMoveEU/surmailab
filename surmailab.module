@@ -167,7 +167,6 @@ function _surmailab_form_submit($form, &$form_state) {
   $title = $node->title;
   $language = $node->language;
   $body = $node->body[$language][0]['safe_value'];
-  $body = $node->body['und'][0]['safe_value']; // fixme check on prod
   $body = _surmailab_compose_body($body, $surveyId, $language);
   $internalName = $node->field_internal_name['und'][0]['safe_value'];
   $recipients = $node->field_recipients['und'][0]['value'];
