@@ -7,14 +7,6 @@ require_once 'surmailab.helpers.php';
  */
 function surmailab_menu() {
   $items = array();
-  $items['admin/config/content/surmailab'] = array(
-    'title' => 'Survey into CiviCRM Mailing AB',
-    'description' => 'Create new CiviCRM Mailing AB based on chosen survey',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('surmailab_form'),
-    'access arguments' => array('access administration pages'),
-    'type' => MENU_NORMAL_ITEM,
-  );
   $items['node/%node/surmailab'] = array(
     'title' => 'Surmailab',
     'page callback' => 'drupal_get_form',
@@ -104,56 +96,6 @@ function surmailab_surtab($form_state, $node) {
 
 
 /**
- * Page callback: Current posts settings
- *
- * @see current_posts_menu()
- */
-function surmailab_form($form, &$form_state) {
-  // todo add link to randomSample
-  $defaultGroupId = $_GET['group_id'];
-  $defaultSurveyId = $_GET['survey_id'];
-  $surveys = _surmailab_survey_list();
-  $list = array(null => t('-- choose survey --'));
-  foreach ($surveys as $survey) {
-    $list[$survey['nid']] = $survey['title'] . ' (' . $survey['language'] .' ' . $survey['nid'] . ')';
-  }
-  $groups = _surmailab_group_list();
-
-  $form['surmailab_form_fieldset'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Survey'),
-  );
-
-
-  $form['surmailab_form_fieldset']['survey_id'] = array(
-    '#type' => 'select',
-    '#title' => t('Survey'),
-    '#description' => t('Content of survey will be used for preparing Mailing A/B'),
-    '#options' => array('' => t('- choose survey -')) + $list,
-    '#default_value' => $defaultSurveyId,
-    '#required' => TRUE,
-  );
-
-  $form['surmailab_form_fieldset']['group_id'] = array(
-    '#type' => 'select',
-    '#title' => t('Group'),
-    '#description' => t('Group for mailing AB'),
-    '#options' => array('' => t('- choose group -')) + $groups,
-    '#default_value' => $defaultGroupId,
-    '#required' => TRUE,
-  );
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Create mailing AB'),
-  );
-  $form['#submit'] = array('_surmailab_form_submit');
-
-  return $form;
-}
-
-
-/**
  * Create Mailing AB.
  *
  * @param $form
@@ -197,34 +139,6 @@ function _surmailab_form_submit($form, &$form_state) {
   );
   $result = civicrm_api3('Randomsample', 'create', $params);
 
-  $components = db_select('webform_component', 'wc')
-    ->fields('wc', array('cid', 'name', 'type', 'extra'))
-    ->condition('nid', $surveyId)
-    ->orderBy('weight')
-    ->execute()
-    ->fetchAllAssoc('cid', PDO::FETCH_ASSOC);
-
-  $renderArray = array();
-  $i = 0;
-  foreach ($components as $c) {
-    $renderArray[++$i] = array(
-      '#type' => 'text',
-      '#title' => $node->title,
-      '#value' => $c['name'],
-    );
-    if ($c['type'] == 'select') {
-      $extra = unserialize($c['extra']);
-      $items = explode("\n", trim($extra['items']));
-      $options = array();
-      foreach ($items as $item) {
-        $t = explode('|', $item);
-        $options[$t[0]] = $t[1];
-      }
-      $renderArray[$i]['#options'] = $options;
-      $renderArray[$i]['#type'] = 'select';
-      $renderArray[$i]['#theme'] = 'item_list';
-    }
-  }
   $mailings = array(
     'a' => array(
       'name' => substr('Test A ('.$internalName.')', 0, 128),
