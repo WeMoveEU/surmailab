@@ -173,7 +173,7 @@ function _surmailab_form_submit($form, &$form_state) {
       'open_tracking' => 1,
       'url_tracking' => 1,
       'dedupe_email' => 1,
-      'from_name' => 'We Move Europe', // todo depends on language
+      'from_name' => 'WeMove.EU', // todo depends on language
       'from_email' => 'info@wemove.eu', // todo depends on language
     );
     $mailing = new CRM_Mailing_BAO_Mailing();
