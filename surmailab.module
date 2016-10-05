@@ -173,7 +173,24 @@ function _surmailab_form_submit($form, &$form_state) {
   $recipients = $node->field_recipients['und'][0]['value'];
   CRM_Core_Error::debug_var('$node', $node);
 
-  // todo create new empty survey group
+  $groupName = 'SURVEY_' . $surveyId . '_' . date('Ymd') . '_' . strtoupper($language);
+  $groupTitle = 'SURVEY-' . $surveyId . '-' . date('Ymd') . '-' . strtoupper($language);
+  $params = array(
+    'sequential' => 1,
+    'name' => $groupName,
+    'title' => $groupTitle,
+    'group_type' => "2",
+  );
+  $result = civicrm_api3('Group', 'get', $params);
+  if ($result['count'] == 1) {
+    $result = civicrm_api3('Group', 'delete', array('id' => $result['id']));
+  }
+  $result = civicrm_api3('Group', 'create', $params);
+  $surveyGroupId = 0;
+  if ($result['count'] == 1) {
+    $surveyGroupId = $result['id'];
+  }
+
   // todo randomsample from, to, number
 
   $components = db_select('webform_component', 'wc')
@@ -243,7 +260,7 @@ function _surmailab_form_submit($form, &$form_state) {
     );
     $mailing = new CRM_Mailing_BAO_Mailing();
     $mm = $mailing->add($params);
-    _surmailab_includeGroup($mm->id, $groupId);
+    _surmailab_includeGroup($mm->id, $surveyGroupId);
     $mailings[$key]['id'] = $mm->id;
   }
 
@@ -307,8 +324,7 @@ function _surmailab_group_list() {
   // todo add filtering by convention of name of group
   civicrm_initialize();
   $query = "SELECT g.id, g.title
-            FROM civicrm_group g LEFT JOIN civicrm_mailing_group mg ON mg.entity_id = g.id AND mg.entity_table = 'civicrm_group'
-            WHERE mg.id IS NULL";
+            FROM civicrm_group g";
   $dao = CRM_Core_DAO::executeQuery($query);
   $list = array();
   while ($dao->fetch()) {
