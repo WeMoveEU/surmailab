@@ -287,7 +287,7 @@ function _surmailab_form_submit($form, &$form_state) {
 
   $node->field_mailing_id = array('und' => array(0 => array('value' => $mailab->id)));
   node_save($node);
-  // todo add drupal message on success
+  $form_state['redirect'] = array('/civicrm/a/', array('fragment' => '/abtest/' . $mailab->id));
 }
 
 
