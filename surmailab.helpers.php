@@ -31,7 +31,7 @@ function _surmailab_get_welcome($language) {
       break;
 
     default:
-      return 'Dear,';
+      return 'Hi,';
   }
 }
 
@@ -43,7 +43,7 @@ function _surmailab_get_goodbye($language) {
       break;
 
     case 'es':
-      return 'Con indignación,<br>todo el equipo de Movemos Europa';
+      return 'Con indignación,<br>todo el equipo de WeMove.EU';
       break;
 
     case 'fr':
@@ -51,11 +51,11 @@ function _surmailab_get_goodbye($language) {
       break;
 
     case 'it':
-      return 'Con determinazione,<br>il team di WeMove';
+      return 'Con determinazione,<br>il team di WeMove.EU';
       break;
 
     default:
-      return 'Best regards,<br>We Move Europe team';
+      return 'Best regards,<br>WeMove.EU team';
   }
 }
 
