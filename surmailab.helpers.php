@@ -55,7 +55,7 @@ function _surmailab_get_goodbye($language) {
       break;
 
     default:
-      return 'Best regards,<br>WeMove.EU team';
+      return 'Thank you,<br>WeMove.EU team';
   }
 }
 
