@@ -8,7 +8,7 @@ require_once 'surmailab.helpers.php';
 function surmailab_menu() {
   $items = array();
   $items['node/%node/surmailab'] = array(
-    'title' => 'Surmailab',
+    'title' => 'Survey-Bot',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('surmailab_surtab', 1),
     'access callback' => 'user_access',
