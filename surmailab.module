@@ -106,12 +106,33 @@ function _surmailab_form_submit($form, &$form_state) {
   $groupId = $form_state['values']['group_id'];
 
   $node = node_load($surveyId);
-  $title = $node->title;
   $language = $node->language;
   $body = $node->body[$language][0]['safe_value'];
-  $body = _surmailab_compose_body($body, $surveyId, $language);
   $internalName = $node->field_internal_name['und'][0]['safe_value'];
   $recipients = $node->field_recipients['und'][0]['value'];
+
+  $params = array(
+    'sequential' => 1,
+    'option_group_id' => "languages",
+    'value' => $language,
+    'options' => array('sort' => "id", 'limit' => 1),
+  );
+  $result = civicrm_api3('OptionValue', 'get', $params);
+  $workflowId = $result['values'][0]['id'];
+
+  $params = array(
+    'sequential' => 1,
+    'workflow_id' => $workflowId,
+    'options' => array('limit' => 1),
+  );
+  $result = civicrm_api3('MessageTemplate', 'get', $params);
+  $msg_html = $result['values'][0]['msg_html'];
+  $msg_subject = $result['values'][0]['msg_subject'];
+
+  $template = CRM_Core_Smarty::singleton();
+  $template->assign('survey_body', $body);
+  $template->assign('survey_id', $surveyId);
+  $renderedBody = $template->fetch('string:'.$msg_html);
 
   $groupName = 'SURVEY_' . $surveyId . '_' . date('Ymd') . '_' . strtoupper($language);
   $groupTitle = 'SURVEY-' . $surveyId . '-' . date('Ymd') . '-' . strtoupper($language);
@@ -142,17 +163,17 @@ function _surmailab_form_submit($form, &$form_state) {
   $mailings = array(
     'a' => array(
       'name' => substr('Test A ('.$internalName.')', 0, 128),
-      'subject' => substr($title, 0, 128),
+      'subject' => substr($msg_subject, 0, 128),
       'mailing_type' => 'experiment',
     ),
     'b' => array(
       'name' => substr('Test B ('.$internalName.')', 0, 128),
-      'subject' => substr($title, 0, 128),
+      'subject' => substr($msg_subject, 0, 128),
       'mailing_type' => 'experiment',
     ),
     'c' => array(
       'name' => substr('Final ('.$internalName.')', 0, 128),
-      'subject' => substr($title, 0, 128),
+      'subject' => substr($msg_subject, 0, 128),
       'mailing_type' => 'winner',
     ),
   );
@@ -162,7 +183,7 @@ function _surmailab_form_submit($form, &$form_state) {
       'name' => $test['name'],
       'subject' => $test['subject'],
       'body_text' => '', // todo change to txt version
-      'body_html' => $body,
+      'body_html' => $renderedBody,
       'created_id' => $adminId,
       'created_date' => date('YmdHis'),
       'mailing_type' => $test['mailing_type'],
