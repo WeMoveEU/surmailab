@@ -133,6 +133,7 @@ function _surmailab_form_submit($form, &$form_state) {
   $template = CRM_Core_Smarty::singleton();
   $template->assign('survey_body', $body);
   $template->assign('survey_id', $surveyId);
+  $template->assign('survey_url_prefix', _surmailab_get_url_prefix($language));
   $template->assign('survey_url_alias', $urlAlias);
   $renderedBody = $template->fetch('string:'.$msg_html);
 
@@ -270,6 +271,16 @@ function _surmailab_get_url_alias($surveyId, $language) {
   $query->condition('language', $language);
   $row = $query->execute()->fetchAssoc();
   return $row['alias'] ? $row['alias'] : $surveyId;
+}
+
+
+/**
+ * @param string $language
+ *
+ * @return mixed
+ */
+function _surmailab_get_url_prefix($language) {
+  return $language == 'en' ? '' : $language . '/';
 }
 
 
