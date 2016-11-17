@@ -110,6 +110,7 @@ function _surmailab_form_submit($form, &$form_state) {
   $body = $node->body[$language][0]['safe_value'];
   $internalName = $node->field_internal_name['und'][0]['safe_value'];
   $recipients = $node->field_recipients['und'][0]['value'];
+  $urlAlias = _surmailab_get_url_alias($surveyId, $language);
 
   $params = array(
     'sequential' => 1,
@@ -132,6 +133,7 @@ function _surmailab_form_submit($form, &$form_state) {
   $template = CRM_Core_Smarty::singleton();
   $template->assign('survey_body', $body);
   $template->assign('survey_id', $surveyId);
+  $template->assign('survey_url_alias', $urlAlias);
   $renderedBody = $template->fetch('string:'.$msg_html);
 
   $groupName = 'SURVEY_' . $surveyId . '_' . date('Ymd') . '_' . strtoupper($language);
@@ -252,6 +254,22 @@ function _surmailab_survey_list() {
  */
 function _surmailab_get_survey($surveyId) {
   return db_select('node', 'n')->fields('n')->condition('nid', $surveyId)->execute()->fetchAssoc();
+}
+
+
+/**
+ * @param int $surveyId
+ * @param string $language
+ *
+ * @return mixed
+ */
+function _surmailab_get_url_alias($surveyId, $language) {
+  $query = db_select('url_alias', 'u', array('fetch' => PDO::FETCH_ASSOC));
+  $query->fields('u');
+  $query->condition('source', 'node/' . $surveyId);
+  $query->condition('language', $language);
+  $row = $query->execute()->fetchAssoc();
+  return $row['alias'] ? $row['alias'] : $surveyId;
 }
 
 
