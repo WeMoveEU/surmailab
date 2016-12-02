@@ -44,3 +44,26 @@ function _surmailab_choose_footer($language) {
       return 14;
   }
 }
+
+
+/**
+ * @param $language
+ *
+ * @return int
+ */
+function _surmailab_choose_campaign($language) {
+  switch ($language) {
+    case 'es':
+      return 309;
+    case 'de':
+      return 306;
+    case 'fr':
+      return 304;
+    case 'it':
+      return 305;
+    case 'pl':
+      return 307;
+    default:
+      return 308;
+  }
+}

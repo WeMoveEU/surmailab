@@ -200,6 +200,7 @@ function _surmailab_form_submit($form, &$form_state) {
       'from_name' => _surmailab_choose_fromname($language),
       'from_email' => 'info@wemove.eu',
       'footer_id' => _surmailab_choose_footer($language),
+      'campaign_id' => _surmailab_choose_campaign($language),
     );
     $mailing = new CRM_Mailing_BAO_Mailing();
     $mm = $mailing->add($params);
