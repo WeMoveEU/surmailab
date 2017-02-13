@@ -137,31 +137,33 @@ function _surmailab_form_submit($form, &$form_state) {
   $template->assign('survey_url_alias', $urlAlias);
   $renderedBody = $template->fetch('string:'.$msg_html);
 
-  $groupName = 'SURVEY_' . $surveyId . '_' . date('Ymd') . '_' . strtoupper($language);
-  $groupTitle = 'SURVEY-' . $surveyId . '-' . date('Ymd') . '-' . strtoupper($language);
-  $params = array(
-    'sequential' => 1,
-    'name' => $groupName,
-    'title' => $groupTitle,
-    'group_type' => "2",
-  );
-  $result = civicrm_api3('Group', 'get', $params);
-  if ($result['count'] == 1) {
-    $result = civicrm_api3('Group', 'delete', array('id' => $result['id']));
-  }
-  $result = civicrm_api3('Group', 'create', $params);
   $surveyGroupId = 0;
-  if ($result['count'] == 1) {
-    $surveyGroupId = $result['id'];
-  }
+  if ($recipients) {
+    $groupName = 'SURVEY_' . $surveyId . '_' . date('Ymd') . '_' . strtoupper($language);
+    $groupTitle = 'SURVEY-' . $surveyId . '-' . date('Ymd') . '-' . strtoupper($language);
+    $params = array(
+      'sequential' => 1,
+      'name' => $groupName,
+      'title' => $groupTitle,
+      'group_type' => "2",
+    );
+    $result = civicrm_api3('Group', 'get', $params);
+    if ($result['count'] == 1) {
+      civicrm_api3('Group', 'delete', array('id' => $result['id']));
+    }
+    $result = civicrm_api3('Group', 'create', $params);
+    if ($result['count'] == 1) {
+      $surveyGroupId = $result['id'];
+    }
 
-  $params = array(
-    'sequential' => 1,
-    'source_group_id' => $groupId,
-    'destination_group_id' => $surveyGroupId,
-    'destination_count' => $recipients,
-  );
-  $result = civicrm_api3('Randomsample', 'create', $params);
+    $params = array(
+      'sequential' => 1,
+      'source_group_id' => $groupId,
+      'destination_group_id' => $surveyGroupId,
+      'destination_count' => $recipients,
+    );
+    civicrm_api3('Randomsample', 'create', $params);
+  }
 
   $mailings = array(
     'a' => array(
@@ -204,7 +206,9 @@ function _surmailab_form_submit($form, &$form_state) {
     );
     $mailing = new CRM_Mailing_BAO_Mailing();
     $mm = $mailing->add($params);
-    _surmailab_includeGroup($mm->id, $surveyGroupId);
+    if ($surveyGroupId) {
+      _surmailab_includeGroup($mm->id, $surveyGroupId);
+    }
     $mailings[$key]['id'] = $mm->id;
   }
 
