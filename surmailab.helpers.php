@@ -12,7 +12,7 @@ function _surmailab_choose_fromname($language) {
     case 'de':
       return 'Jörg Rohwedder - WeMove.EU';
     case 'fr':
-      return 'Mika Leandro - WeMove.EU';
+      return 'Marine Gauthier - WeMove.EU';
     case 'it':
       return 'Olga - WeMove.EU';
     case 'pl':
