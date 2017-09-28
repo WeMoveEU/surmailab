@@ -138,7 +138,7 @@ function _surmailab_form_submit($form, &$form_state) {
   $renderedBody = $template->fetch('string:'.$msg_html);
 
   $surveyGroupId = 0;
-  if ($recipients) {
+  if ($recipients && 'dont-use-this-field' == 'because-it-sometimes-doesnt-work') {
     $groupName = 'SURVEY_' . $surveyId . '_' . date('Ymd') . '_' . strtoupper($language);
     $groupTitle = 'SURVEY-' . $surveyId . '-' . date('Ymd') . '-' . strtoupper($language);
     $params = array(
