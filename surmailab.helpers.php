@@ -18,7 +18,7 @@ function _surmailab_choose_fromname($language) {
     case 'pl':
       return 'Julia - WeMove.EU';
     default:
-      return 'Julia - WeMove.EU';
+      return 'Mika - WeMove.EU';
   }
 }
 
