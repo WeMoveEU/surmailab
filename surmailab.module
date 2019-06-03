@@ -56,7 +56,7 @@ function surmailab_surtab($form_state, $node) {
 
   $form['surmailab_form_fieldset'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Survey into CiviCRM Mailing AB'),
+    '#title' => t('Survey into CiviCRM Mailing ABB'),
   );
 
   $form['surmailab_form_fieldset']['survey_id'] = array(
